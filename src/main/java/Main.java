@@ -3,6 +3,38 @@ class Main {
     System.out.println("Hello World!");
   }
 
+  ///////////////////////////BAGRUT///////////////////////
+
+  public static boolean ex6(BinNode<Range> tree)
+	  {
+	      if(tree == null)
+	          return true;
+	        
+	      if(tree.hasLeft())
+	      {
+	          if((tree.getValue().getLow()!= tree.getLeft().getValue().getLow()) && (tree.getValue().getHigh()<tree.getLeft().getValue().getHigh()))
+	              return false;
+	      }
+	    
+	      if(tree.hasRight())
+	      {
+	          if(tree.getValue().getHigh()!= tree.getRight().getValue().getHigh() && (tree.getValue().getLow()>tree.getRight().getValue().getLow()))
+	              return false;
+	      }
+	    
+	      if(tree.hasLeft()&&tree.hasRight())
+	      {
+	          if(tree.getLeft().getValue().getHigh()>tree.getRight().getValue().getLow())
+	              return false;
+	      }
+	    
+	      return ex6(tree.getLeft()) && ex6(tree.getRight());
+	  }
+
+///////////////////////////trees/////////////////////////  
+
+   
+
   public static void ex11a(BinNode<Integer> root) 
 	{
         if (root == null)
