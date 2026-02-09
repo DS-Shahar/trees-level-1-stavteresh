@@ -156,4 +156,15 @@ public static int ex12(BinNode<Integer> tree)
 	    return ex18(t1,t2.getLeft()) && ex18(t1,t2.getRight());
 	}
 
+	public static boolean ex20(BinNode<Integer> t, int n)
+	{
+	    if(t == null)
+	        return false;
+	    if(n==0)
+	        return true;
+	    if(t.getValue() != n)
+	        return ex20(t.getLeft(), n) || ex20(t.getRight(), n);
+	    return ex20(t, n-1);
+	}
+
 }
