@@ -31,6 +31,88 @@ class Main {
 	      return ex6(tree.getLeft()) && ex6(tree.getRight());
 	  }
 
+		public static void findAndAssignFlight(Flight[] flights, Passenger p) {
+    Flight bestFlight = null;
+    int minKm = Integer.MAX_VALUE;
+
+    for (int i = 0; i < flights.length; i++) {
+        if (p.getKm() + flights[i].getKm() >= 20000) {
+            if (flights[i].getKm() < minKm) {
+                minKm = flights[i].getKm();
+                bestFlight = flights[i];
+            }
+        }
+    }
+
+    if (bestFlight != null) {
+        p.setKm(p.getKm() + bestFlight.getKm());
+        p.setPermPass(true);
+
+        int count = 0;
+        Node<Passenger> temp = bestFlight.getPassengers();
+        while (temp != null) {
+            count++;
+            temp = temp.getNext();
+        }
+
+        if (count < bestFlight.getCapacity()) {
+            bestFlight.setPassengers(new Node<Passenger>(p, bestFlight.getPassengers()));
+        } else {
+            bestFlight.getWaiting().insert(p);
+        }
+    }
+}
+סעיף ב'
+Java
+public static void cancelAndReplace(Flight[] flights, int index, Passenger p) {
+    Flight f = flights[index];
+
+    // הסרת הנוסע מהרשימה
+    Node<Passenger> dummy = new Node<Passenger>(null, f.getPassengers());
+    Node<Passenger> prev = dummy;
+    while (prev.getNext() != null) {
+        if (prev.getNext().getValue() == p) {
+            prev.setNext(prev.getNext().getNext());
+            break;
+        }
+        prev = prev.getNext();
+    }
+    f.setPassengers(dummy.getNext());
+    
+    // עדכון נוסע מבטל
+    p.setKm(p.getKm() - f.getKm());
+    if (p.getKm() < 20000) p.setPermPass(false);
+
+    // מציאת מחליף
+    if (!f.getWaiting().isEmpty()) {
+        Queue<Passenger> tempQ = new Queue<Passenger>();
+        Passenger best = null;
+
+        while (!f.getWaiting().isEmpty()) {
+            Passenger curr = f.getWaiting().remove();
+            if (curr.getPermPass()) {
+                if (best == null || !best.getPermPass() || curr.getKm() > best.getKm()) {
+                    best = curr;
+                }
+            }
+            tempQ.insert(curr);
+        }
+
+        if (best == null) best = tempQ.remove();
+        
+        while (!tempQ.isEmpty()) {
+            Passenger curr = tempQ.remove();
+            if (curr != best) f.getWaiting().insert(curr);
+        }
+        
+        f.setPassengers(new Node<Passenger>(best, f.getPassengers()));
+    }
+}
+
+
+
+	
+
 ///////////////////////////trees/////////////////////////  
 
    
